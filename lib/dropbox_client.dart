@@ -119,6 +119,13 @@ class Dropbox {
     return await _channel.invokeMethod('listFolder', {'path': path});
   }
 
+  /// create folder => *Only for Android.
+  ///
+  /// returns String
+  static Future createFolder(String folderName, String path) async {
+    return await _channel.invokeMethod('createFolder', {'folderName': folderName, 'path': path,});
+  }
+
   /// get temporary link url for file
   ///
   /// returns url for accessing dropbox file.

@@ -33,6 +33,7 @@ import com.dropbox.core.android.AuthActivity;
 import com.dropbox.core.util.IOUtil;
 import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.auth.DbxUserAuthRequests;
+import com.dropbox.core.v2.files.CreateFolderResult;
 import com.dropbox.core.v2.files.DownloadBuilder;
 import com.dropbox.core.v2.files.FileMetadata;
 import com.dropbox.core.v2.files.FolderMetadata;
@@ -241,6 +242,13 @@ public class DropboxPlugin implements FlutterPlugin, MethodCallHandler, Activity
       if (!checkClient(result)) return;
       (new TemporaryLinkTask(result)).execute(path);
 
+    } else if (call.method.equals("createFolder")) {
+      String folderName = call.argument("folderName");
+      String path = call.argument("path");
+
+      if (!checkClient(result)) return;
+      (new CreateFolderTask(result)).execute(folderName, path);
+
     } else if (call.method.equals("getAccessToken")) {
 //      result.success(accessToken);
       String token = Auth.getOAuth2Token();
@@ -400,6 +408,32 @@ public class DropboxPlugin implements FlutterPlugin, MethodCallHandler, Activity
       result.success(paths);
     }
 
+  }
+
+  class CreateFolderTask extends AsyncTask<String, Void, String> {
+    Result result;
+
+    private CreateFolderTask(Result _result) {
+      result = _result;
+    }
+    @Override
+    protected String doInBackground(String... argPaths) {
+
+      CreateFolderResult linkResult = null;
+      try {
+        linkResult = DropboxPlugin.client.files().createFolderV2(argPaths[1]+argPaths[0]);
+
+        return linkResult.getMetadata().getName();
+      } catch (DbxException e) {
+        e.printStackTrace();
+        return e.getMessage();
+      }
+    }
+    @Override
+    protected void onPostExecute(String r) {
+      super.onPostExecute(r);
+      result.success(r);
+    }
   }
 
   class TemporaryLinkTask extends AsyncTask<String, Void, String> {
