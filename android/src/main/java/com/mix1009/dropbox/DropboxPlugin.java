@@ -243,11 +243,10 @@ public class DropboxPlugin implements FlutterPlugin, MethodCallHandler, Activity
       (new TemporaryLinkTask(result)).execute(path);
 
     } else if (call.method.equals("createFolder")) {
-      String folderName = call.argument("folderName");
       String path = call.argument("path");
 
       if (!checkClient(result)) return;
-      (new CreateFolderTask(result)).execute(folderName, path);
+      (new CreateFolderTask(result)).execute(path);
 
     } else if (call.method.equals("getAccessToken")) {
 //      result.success(accessToken);
@@ -421,7 +420,7 @@ public class DropboxPlugin implements FlutterPlugin, MethodCallHandler, Activity
 
       CreateFolderResult linkResult = null;
       try {
-        linkResult = DropboxPlugin.client.files().createFolderV2(argPaths[1]+argPaths[0]);
+        linkResult = DropboxPlugin.client.files().createFolderV2(argPaths[0]);
 
         return linkResult.getMetadata().getName();
       } catch (DbxException e) {

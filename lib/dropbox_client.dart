@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:flutter/services.dart';
 
 typedef DropboxProgressCallback = void Function(
@@ -122,8 +123,8 @@ class Dropbox {
   /// create folder => *Only for Android.
   ///
   /// returns String
-  static Future createFolder(String folderName, String path) async {
-    return await _channel.invokeMethod('createFolder', {'folderName': folderName, 'path': path,});
+  static Future createFolder(String path) async {
+    return await _channel.invokeMethod('createFolder', {'path': path});
   }
 
   /// get temporary link url for file
